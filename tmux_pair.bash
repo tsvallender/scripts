@@ -19,7 +19,7 @@ fi
 pushd ~
 
 SOCKET_PATH="/var/tmux_share/shared"
-SHARED_USER="foxsoft" # Should change this to use getent group tmux
+SHARED_USER="pair" # Should change this to use getent group tmux
 
 share_ro_session() {
   chmod 770 $SOCKET_PATH
@@ -39,8 +39,18 @@ unshare_session() {
 }
 
 new_session() {
-  tmux -S $SOCKET_PATH new -s shared -d
-  tmux -S $SOCKET_PATH attach
+  tmux -S $SOCKET_PATH new -s shared -d -n 'Notes'
+  tmux -S $SOCKET_PATH attach \; \
+    send-keys 'cd notes && vi index.md' C-m \; \
+    neww -n 'Services' \; \
+    send-keys 'cd iucn/ibat' C-m C-l 'docker compose up' \; \
+    neww -n 'IBAT' \; \
+    send-keys 'cd iucn/ibat && vi' C-m \; \
+    send-keys ':vsplit' C-m \; \
+    send-keys C-w 'l:terminal' C-m \; \
+    neww -n 'BASH' \; \
+    selectw -t 1 \; \
+    selectw -t 2
 }
 
 attach_to_session() {
